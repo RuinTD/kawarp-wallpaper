@@ -1,0 +1,16 @@
+{
+	"contentrating": "Everyone",
+	"preview": "preview.gif",
+	"ratingsex": "none",
+	"ratingviolence": "none",
+	"snapshotformat": 2,
+	"snapshotoverlay": "",
+	"tags": [
+		"Abstract"
+	],
+	"version": 4,
+	"visibility": "public",
+	"description": "Applies a kawase blur & domain warping shader on your album art or any other art you choose. Includes options for pride flags.\n\n(I'm open to suggestions for a better title and description lol)\n\nPowered by [url=https://kawarp.boidu.dev/]Kawarp[/url] and inspired by [url=https://github.com/better-lyrics/shaders]Better Lyrics Shaders[/url] (which uses Kawarp)",
+	"workshopid": "3775904129",
+	"workshopurl": "steam://url/CommunityFilePage/3775904129"
+}
