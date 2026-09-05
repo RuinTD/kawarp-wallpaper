@@ -113,7 +113,7 @@ window.wallpaperPropertyListener = {
     kawarp.blurPasses = props.blurPasses;
     // kawarp.animationSpeed = props.animationSpeed;
     kawarp.transitionDuration = props.transitionDuration * 1000;
-    // kawarp.saturation = props.saturation;
+    kawarp.saturation = props.saturation;
     kawarp.dithering = props.dithering / 1000;
   },
   applyGeneralProperties(properties) {
@@ -140,14 +140,7 @@ function getThumbnail(): string | string[] | undefined {
   const isPlaybackActive =
     (props.useAlbumArt == "playing" && state == "playing") ||
     (props.useAlbumArt == "playorpause" && state != "stopped");
-  const artDetectionMap = {
-    music: props.artDetectMusic,
-    video: props.artDetectVideo,
-    image: props.artDetectImage,
-  };
-  const isContentAllowed =
-    media.properties?.contentType &&
-    artDetectionMap[media.properties.contentType];
+  const isContentAllowed = media.properties?.contentType == "music";
   const shouldShowArt =
     isPlaybackActive &&
     isContentAllowed &&

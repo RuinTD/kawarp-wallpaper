@@ -4,13 +4,13 @@ import {
   fileProperty,
   sliderProperty,
   groupProperty,
-  boolProperty,
 } from "wallpaper-engine/plugin";
 
 const isCustomGradient = "fallback.value == 'gradient'";
 
 export const myProperties = {
-  artGroup: groupProperty({ text: "Artwork Settings" }),
+  //#region Look Settings
+  lookGroup: groupProperty({ text: "Look Settings" }),
   fallback: comboProperty({
     text: "Default Background",
     value: "presets/mountains.jpg",
@@ -57,6 +57,7 @@ export const myProperties = {
     max: 10,
     condition: isCustomGradient,
   }),
+  //#region Gradient Colors
   gradientColor1: colorProperty({
     text: "Color 1",
     value: "#ff0000",
@@ -107,8 +108,9 @@ export const myProperties = {
     value: "#000000",
     condition: `${isCustomGradient} && gradientSteps.value >= 10`,
   }),
+  //#endregion Gradient Colors
   useAlbumArt: comboProperty({
-    text: "Use Media Art",
+    text: "Use Album Art",
     value: "playing",
     options: [
       { label: "Never", value: "never" },
@@ -116,23 +118,6 @@ export const myProperties = {
       { label: "Playing or Paused", value: "playorpause" },
     ],
   }),
-  artDetectMusic: boolProperty({
-    text: "Detect Music",
-    value: true,
-    condition: "useAlbumArt.value != 'never'",
-  }),
-  artDetectVideo: boolProperty({
-    text: "Detect Videos",
-    value: true,
-    condition: "useAlbumArt.value != 'never'",
-  }),
-  artDetectImage: boolProperty({
-    text: "Detect Images",
-    value: true,
-    condition: "useAlbumArt.value != 'never'",
-  }),
-
-  kuwarpGroup: groupProperty({ text: "Kuwarp Settings" }),
   warpIntensity: sliderProperty({
     text: "Warp Intensity",
     value: 1,
@@ -147,42 +132,45 @@ export const myProperties = {
     min: 1,
     max: 40,
   }),
-  animationSpeed: sliderProperty({
-    text: "Animation Speed",
-    value: 1,
-    min: 0.1,
+  saturation: sliderProperty({
+    text: "Saturation",
+    value: 1.5,
+    min: 0,
     max: 2,
     fraction: true,
-    precision: 1,
+    precision: 2,
   }),
-  transitionDuration: sliderProperty({
-    text: "Transition Duration (Seconds)",
-    value: 1,
-    min: 0,
-    max: 3,
-    fraction: true,
-    precision: 1,
-  }),
-  // WE already has a saturation slider
-  // saturation: sliderProperty({
-  //   text: "Saturation",
-  //   value: 1.5,
-  //   min: 0,
-  //   max: 2,
-  //   fraction: true,
-  //   precision: 2,
-  //   // @ts-expect-error - https://github.com/ShadowNineX/wallpaper-engine/issues/3
-  //   step: 0.01,
-  // }),
   dithering: sliderProperty({
     text: "Dithering",
     value: 8,
     min: 0,
-    max: 100,
+    max: 50,
   }),
+  //#endregion Look Settings
 
+  //#region Motion Settings
+  motionGroup: groupProperty({ text: "Motion Settings" }),
+  animationSpeed: sliderProperty({
+    text: "Animation Speed",
+    value: 1,
+    min: 0,
+    max: 2,
+    fraction: true,
+    precision: 2,
+  }),
+  transitionDuration: sliderProperty({
+    text: "Transition Duration (Seconds)",
+    value: 1,
+    min: 0.1,
+    max: 5,
+    fraction: true,
+    precision: 1,
+  }),
+  //#endregion Motion Settings
+
+  //#region Audio Settings
   audioGroup: groupProperty({
-    text: "Audio Responsive Settings",
+    text: "Audio Settings",
     condition: "audioprocessing.value == true",
   }),
   audioMethod: comboProperty({
@@ -212,4 +200,5 @@ export const myProperties = {
     fraction: true,
     precision: 1,
   }),
+  //#endregion Audio Settings
 };
