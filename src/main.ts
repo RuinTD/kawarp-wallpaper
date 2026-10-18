@@ -239,5 +239,5 @@ window.wallpaperRegisterAudioListener((samples) => {
   analyzer.process(samples, deltaSeconds);
 });
 
-useThumbnail();
+// useThumbnail();
 loop.start();
