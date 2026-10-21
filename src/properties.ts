@@ -126,12 +126,12 @@ export const myProperties = {
     min: 0,
     max: 1,
     fraction: true,
-    precision: 2,
+    precision: 1,
   }),
   blurPasses: sliderProperty({
     text: "Blur Passes",
     value: 8,
-    min: 1,
+    min: 0,
     max: 40,
   }),
   saturation: sliderProperty({
@@ -140,7 +140,7 @@ export const myProperties = {
     min: 0,
     max: 2,
     fraction: true,
-    precision: 2,
+    precision: 1,
   }),
   dithering: sliderProperty({
     text: "Dithering",
@@ -158,7 +158,7 @@ export const myProperties = {
     min: 0,
     max: 2,
     fraction: true,
-    precision: 2,
+    precision: 1,
   }),
   transitionDuration: sliderProperty({
     text: "Transition Duration (Seconds)",

@@ -16,6 +16,7 @@ import type {
   WallpaperMediaPlaybackState,
   WallpaperMediaPropertiesEvent,
   WallpaperMediaThumbnailEvent,
+  WallpaperPropertyListenerOf,
 } from "wallpaper-engine";
 import { clamp, isEqual, throttle } from "es-toolkit";
 import { assert } from "@std/assert";
@@ -270,7 +271,7 @@ window.wallpaperPropertyListener = {
     if (paused) loop.stop();
     else loop.start();
   },
-};
+} satisfies WallpaperPropertyListenerOf<typeof myProperties>;
 
 addEventListener("resize", () => {
   canvas.width = window.innerWidth;
