@@ -14,7 +14,7 @@ export default defineConfig({
       supportsAudioProcessing: true,
       properties: myProperties,
       projectLink: {
-        name: "kuwarp-wallpaper",
+        name: "kawarp-wallpaper",
       },
     }),
     {
