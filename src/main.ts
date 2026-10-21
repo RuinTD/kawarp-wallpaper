@@ -41,6 +41,8 @@ const SPEED_THRESHOLD = 0.001;
 
 let currentScale = 1;
 let currentSpeed = 1;
+
+let time = 0;
 const loop = createFpsLimiter((_dt) => {
   const speedBoost = props.audioSpeedMult;
   const scaleBoost = props.audioScaleBoost;
@@ -177,7 +179,13 @@ const loop = createFpsLimiter((_dt) => {
   //   { kawarpAnimationSpeed: kawarp.animationSpeed, kawarpScale: kawarp.scale },
   // );
 
-  kawarp.renderFrame();
+  const doAnimate =
+    props.useAlbumArt == "never" ||
+    props.useAlbumArt == "playing" ||
+    (props.useAlbumArt == "playorpause" &&
+      getMediaPlaybackStatus(media.playback) != "paused");
+  if (doAnimate) time += _dt * kawarp.animationSpeed;
+  kawarp.renderFrame(time);
 });
 
 function secsToTime(secs: number): string {
