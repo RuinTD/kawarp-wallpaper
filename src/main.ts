@@ -293,15 +293,20 @@ function getThumbnail(): string | string[] | undefined {
   const thumbnail: string | undefined = media.artwork?.thumbnail;
   const state = getMediaPlaybackStatus(media.playback);
 
+  const contentMap: Record<
+    WallpaperMediaPropertiesEvent["contentType"] | "_",
+    boolean
+  > = {
+    music: props.detectMusic,
+    video: props.detectVideo,
+    image: props.detectImage,
+    _: false,
+  };
   const isPlaybackActive =
     (props.useAlbumArt == "playing" && state == "playing") ||
     (props.useAlbumArt == "playorpause" && state != "stopped");
-  const isContentAllowed = media.properties?.contentType == "music";
-  const shouldShowArt =
-    isPlaybackActive &&
-    isContentAllowed &&
-    thumbnail &&
-    thumbnail.slice(thumbnail.indexOf(",") + 1);
+  const isContentAllowed = contentMap[media.properties?.contentType || "_"];
+  const shouldShowArt = isPlaybackActive && isContentAllowed && !!thumbnail;
 
   if (shouldShowArt) return thumbnail;
   else if (props.fallback == "gradient") {

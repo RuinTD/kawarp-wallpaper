@@ -8,11 +8,13 @@ import {
 } from "wallpaper-engine/plugin";
 
 const isCustomGradient = "fallback.value == 'gradient'";
+const isUseAlbumArt = "useAlbumArt.value != 'never'";
 
 export const myProperties = {
   debug: boolProperty({ text: "DEBUG", value: false }),
-  //#region Look Settings
-  lookGroup: groupProperty({ text: "Look Settings" }),
+
+  //#region Art Settings
+  artGroup: groupProperty({ text: "Art Settings" }),
   fallback: comboProperty({
     text: "Default Background",
     value: "presets/mountains.jpg",
@@ -29,7 +31,7 @@ export const myProperties = {
     ],
   }),
   pridePreset: comboProperty({
-    text: "Pride Flag",
+    text: "🏳️‍🌈 Pride Flag",
     condition: "fallback.value == 'pride'",
     value: "pride/rainbow.png",
     options: [
@@ -112,7 +114,7 @@ export const myProperties = {
   }),
   //#endregion Gradient Colors
   useAlbumArt: comboProperty({
-    text: "Use Album Art",
+    text: "Use Media Thumbnail",
     value: "playing",
     options: [
       { label: "Never", value: "never" },
@@ -120,6 +122,25 @@ export const myProperties = {
       { label: "Playing or Paused", value: "playorpause" },
     ],
   }),
+  detectMusic: boolProperty({
+    text: "Detect Music",
+    value: true,
+    condition: isUseAlbumArt,
+  }),
+  detectVideo: boolProperty({
+    text: "Detect Videos",
+    value: true,
+    condition: isUseAlbumArt,
+  }),
+  detectImage: boolProperty({
+    text: "Detect Images",
+    value: false,
+    condition: isUseAlbumArt,
+  }),
+  //#endregion Art Settings
+
+  //#region Look Settings
+  lookGroup: groupProperty({ text: "Look Settings" }),
   warpIntensity: sliderProperty({
     text: "Warp Intensity",
     value: 1,
