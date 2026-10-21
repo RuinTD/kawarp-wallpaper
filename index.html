@@ -5,6 +5,72 @@
   </head>
   <body>
     <canvas id="canvas"></canvas>
+    <img id="debug-art" class="debug topright" />
+
+    <div class="debug bottomright">
+      <p>averageVolume <meter id="debug-averageVolume"></meter></p>
+      <p>rmsVolume <meter id="debug-rmsVolume"></meter></p>
+      <p>peakVolume <meter id="debug-peakVolume"></meter></p>
+      <p>leftVolume <meter id="debug-leftVolume"></meter></p>
+      <p>rightVolume <meter id="debug-rightVolume"></meter></p>
+      <p>
+        stereoBalance
+        <meter id="debug-leftBalance" dir="rtl" class="half"></meter
+        ><meter id="debug-rightBalance" class="half"></meter>
+      </p>
+      <p>bass <meter id="debug-bass"></meter></p>
+      <p>midrange <meter id="debug-midrange"></meter></p>
+      <p>treble <meter id="debug-treble"></meter></p>
+      <hr />
+      <p>decayingPeakVolume <meter id="debug-decayingPeakVolume"></meter></p>
+      <p>kick <meter id="debug-kick"></meter></p>
+      <p>clap <meter id="debug-clap"></meter></p>
+      <p>hiHat <meter id="debug-hiHat"></meter></p>
+      <p>beat <meter id="debug-beat"></meter></p>
+      <p>
+        <span id="debug-bpm-text" style="font-size: smaller"></span>bpm
+        <meter id="debug-bpm" max="240"></meter>
+      </p>
+      <p>onset <meter id="debug-onset"></meter></p>
+    </div>
+
+    <div class="debug topleft" style="text-align: center">
+      <div class="container">
+        <span id="debug-media-status" class="left"></span>
+        <span id="debug-media-prog-text" class="center"></span>
+        <span id="debug-media-type" class="right"></span>
+      </div>
+      <p>
+        <meter
+          id="debug-media-prog"
+          style="width: 100%; min-inline-size: 10em"
+        ></meter>
+      </p>
+      <p id="debug-media-prog-text"></p>
+      <!-- <p id="debug-media"></p> -->
+      <div id="debug-media-props">
+        <hr />
+        <p id="debug-media-title" style="font-weight: bolder"></p>
+        <p id="debug-media-subTitle" style="font-size: smaller"></p>
+        <p id="debug-media-artist"></p>
+        <p id="debug-media-albumArtist" style="font-size: smaller"></p>
+        <p id="debug-media-album"></p>
+        <p id="debug-media-genres" style="font-style: italic"></p>
+      </div>
+      <div id="debug-media-artwork">
+        <hr />
+        <p><img id="debug-media-art" /></p>
+        <p>
+          <input id="debug-media-primary" type="color" disabled />
+          <input id="debug-media-secondary" type="color" disabled />
+          <input id="debug-media-tertiary" type="color" disabled />
+        </p>
+        <p>
+          <input id="debug-media-textColor" type="color" disabled />
+          <input id="debug-media-highContrastColor" type="color" disabled />
+        </p>
+      </div>
+    </div>
     <script type="module" src="src/main.ts"></script>
   </body>
 </html>

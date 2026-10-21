@@ -4,11 +4,13 @@ import {
   fileProperty,
   sliderProperty,
   groupProperty,
+  boolProperty,
 } from "wallpaper-engine/plugin";
 
 const isCustomGradient = "fallback.value == 'gradient'";
 
 export const myProperties = {
+  debug: boolProperty({ text: "DEBUG", value: false }),
   //#region Look Settings
   lookGroup: groupProperty({ text: "Look Settings" }),
   fallback: comboProperty({

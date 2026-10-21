@@ -14,7 +14,6 @@
     "@std/assert": "npm:@jsr/std__assert@^1.0.19",
     "@tsconfig/bun": "^1.0.11",
     "es-toolkit": "^1.52.0",
-    "type-fest": "^5.10.0",
     "wallpaper-engine": "^1.4.0"
   },
   "devDependencies": {
