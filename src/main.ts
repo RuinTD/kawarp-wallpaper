@@ -140,10 +140,8 @@ const loop = createFpsLimiter((_dt) => {
   // );
 
   const doAnimate =
-    props.useAlbumArt == "never" ||
-    props.useAlbumArt == "playing" ||
-    (props.useAlbumArt == "playorpause" &&
-      getMediaPlaybackStatus(media.playback) != "paused");
+    getMediaPlaybackStatus(media.playback) == "playing" ||
+    currentThumbnail.source != "media";
   if (doAnimate) time += _dt * kawarp.animationSpeed;
   kawarp.renderFrame(time);
 });
@@ -279,9 +277,15 @@ function getThumbnail(): Thumbnail {
   return { source: "fallback", src: props.fallback };
 }
 
+const defaultThumbnail: Thumbnail = {
+  src: "presets/mountains.jpg",
+  source: "fallback",
+};
 let lastThumbnail: Thumbnail | undefined;
+let currentThumbnail: Thumbnail = defaultThumbnail;
 let queuedThumbnail: NodeJS.Timeout | undefined;
 async function __useThumbnail(thumbnail: Thumbnail) {
+  currentThumbnail = thumbnail;
   // DEBUG
   {
     debugEl.art.src = thumbnail.src;
