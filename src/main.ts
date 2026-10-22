@@ -19,14 +19,64 @@ import type {
   WallpaperPropertyListenerOf,
 } from "wallpaper-engine";
 import { clamp, isEqual, throttle } from "es-toolkit";
-import { assert } from "@std/assert";
 import { DefaultWEProps } from "./defaultProps.ts";
 
-const $ = document.querySelector.bind(document);
+const $ = <T extends Element = HTMLElement>(selector: string): T => {
+  const el = document.querySelector(selector);
+  if (!el) throw new Error(`Element not found: ${selector}`);
+  return el as T;
+};
 const $$ = document.querySelectorAll.bind(document);
 
-const canvas = $("canvas");
-assert(canvas);
+const debugEl = {
+  art: $<HTMLImageElement>("#debug-art"),
+  artInfo: $<HTMLParagraphElement>("#debug-art-info"),
+
+  media: $<HTMLDivElement>("#debug-media"),
+  mediaStatus: $<HTMLSpanElement>("#debug-media-status"),
+  mediaProgText: $<HTMLSpanElement>("#debug-media-prog-text"),
+  mediaType: $<HTMLSpanElement>("#debug-media-type"),
+  mediaProg: $<HTMLMeterElement>("#debug-media-prog"),
+
+  mediaProps: $<HTMLDivElement>("#debug-media-props"),
+  mediaTitle: $<HTMLParagraphElement>("#debug-media-title"),
+  mediaSubTitle: $<HTMLParagraphElement>("#debug-media-subTitle"),
+  mediaArtist: $<HTMLParagraphElement>("#debug-media-artist"),
+  mediaAlbumArtist: $<HTMLParagraphElement>("#debug-media-albumArtist"),
+  mediaAlbum: $<HTMLParagraphElement>("#debug-media-album"),
+  mediaGenres: $<HTMLParagraphElement>("#debug-media-genres"),
+
+  mediaArtwork: $<HTMLDivElement>("#debug-media-artwork"),
+  mediaArt: $<HTMLImageElement>("#debug-media-art"),
+  mediaPrimary: $<HTMLInputElement>("#debug-media-primary"),
+  mediaSecondary: $<HTMLInputElement>("#debug-media-secondary"),
+  mediaTertiary: $<HTMLInputElement>("#debug-media-tertiary"),
+  mediaTextColor: $<HTMLInputElement>("#debug-media-textColor"),
+  mediaHighContrastColor: $<HTMLInputElement>("#debug-media-highContrastColor"),
+
+  audio: $<HTMLDivElement>("#debug-audio"),
+  averageVolume: $<HTMLMeterElement>("#debug-averageVolume"),
+  rmsVolume: $<HTMLMeterElement>("#debug-rmsVolume"),
+  peakVolume: $<HTMLMeterElement>("#debug-peakVolume"),
+  leftVolume: $<HTMLMeterElement>("#debug-leftVolume"),
+  rightVolume: $<HTMLMeterElement>("#debug-rightVolume"),
+  leftBalance: $<HTMLMeterElement>("#debug-leftBalance"),
+  rightBalance: $<HTMLMeterElement>("#debug-rightBalance"),
+  bass: $<HTMLMeterElement>("#debug-bass"),
+  midrange: $<HTMLMeterElement>("#debug-midrange"),
+  treble: $<HTMLMeterElement>("#debug-treble"),
+
+  decayingPeakVolume: $<HTMLMeterElement>("#debug-decayingPeakVolume"),
+  kick: $<HTMLMeterElement>("#debug-kick"),
+  clap: $<HTMLMeterElement>("#debug-clap"),
+  hiHat: $<HTMLMeterElement>("#debug-hiHat"),
+  beat: $<HTMLMeterElement>("#debug-beat"),
+  bpm: $<HTMLMeterElement>("#debug-bpm"),
+  bpmText: $<HTMLSpanElement>("#debug-bpm-text"),
+  onset: $<HTMLMeterElement>("#debug-onset"),
+};
+
+const canvas = $<HTMLCanvasElement>("canvas");
 canvas.height = window.innerHeight;
 canvas.width = window.innerWidth;
 const kawarp = new Kawarp(canvas);
@@ -82,98 +132,6 @@ const loop = createFpsLimiter((_dt) => {
   } else currentSpeed = speedMult;
   kawarp.animationSpeed = props.animationSpeed * currentSpeed;
 
-  if (props.debug) {
-    const thumbnail = getThumbnail();
-    $<HTMLImageElement>("#debug-art")!.src = thumbnail.src;
-    let artInfo = thumbnail.source;
-    if (queuedThumbnail) artInfo += " (queued)";
-    debugText("#debug-art-info", artInfo);
-
-    debugNumber("#debug-averageVolume", analyzer.averageVolume);
-    debugNumber("#debug-rmsVolume", analyzer.rmsVolume);
-    debugNumber("#debug-peakVolume", analyzer.peakVolume);
-    debugNumber("#debug-leftVolume", analyzer.leftVolume);
-    debugNumber("#debug-rightVolume", analyzer.rightVolume);
-    // debugProgress("#debug-stereoBalance", analyzer.stereoBalance);
-    debugNumber("#debug-leftBalance", clamp(-analyzer.stereoBalance, 1));
-    debugNumber("#debug-rightBalance", clamp(analyzer.stereoBalance, 1));
-    debugNumber("#debug-bass", analyzer.bass);
-    debugNumber("#debug-midrange", analyzer.midrange);
-    debugNumber("#debug-treble", analyzer.treble);
-
-    debugNumber("#debug-decayingPeakVolume", analyzer.decayingPeakVolume);
-    debugNumber("#debug-kick", analyzer.kick);
-    debugNumber("#debug-clap", analyzer.clap);
-    debugNumber("#debug-hiHat", analyzer.hiHat);
-    debugNumber("#debug-beat", analyzer.beat);
-    debugNumber("#debug-bpm", analyzer.bpm);
-    debugText(
-      "#debug-bpm-text",
-      analyzer.bpm ? `${Math.round(analyzer.bpm)} ` : "",
-    );
-    debugNumber("#debug-onset", analyzer.onset);
-
-    const statusEmojiMap = {
-      playing: "▶️",
-      paused: "⏸️",
-      stopped: "⏹️",
-      _: "❌",
-    };
-    const contentTypeEmojiMap = {
-      music: "🎵",
-      video: "📹",
-      image: "🖼️",
-      _: "",
-    };
-
-    if (media.artwork) {
-      $<HTMLDivElement>("#debug-media-artwork")!.style.display = "block";
-      $<HTMLImageElement>("#debug-media-art")!.src = media.artwork.thumbnail;
-      debugValue("#debug-media-primary", media.artwork.primaryColor);
-      debugValue("#debug-media-secondary", media.artwork.secondaryColor);
-      debugValue("#debug-media-tertiary", media.artwork.tertiaryColor);
-      debugValue("#debug-media-textColor", media.artwork.textColor);
-      debugValue(
-        "#debug-media-highContrastColor",
-        media.artwork.highContrastColor,
-      );
-    } else $<HTMLDivElement>("#debug-media-artwork")!.style.display = "none";
-
-    debugText(
-      "#debug-media-status",
-      !media.enabled
-        ? "❌"
-        : statusEmojiMap[getMediaPlaybackStatus(media.playback)],
-    );
-    debugText(
-      "#debug-media-type",
-      contentTypeEmojiMap[media.properties?.contentType || "_"],
-    );
-
-    $<HTMLMeterElement>("#debug-media-prog")!.max = media.duration;
-    debugNumber("#debug-media-prog", media.position);
-    if (media.duration != 0) {
-      const text = `${secsToTime(media.position)} / ${secsToTime(media.duration)}`;
-      debugText("#debug-media-prog-text", text);
-      $<HTMLMeterElement>("#debug-media-prog")!.style.display = "inline-block";
-    } else {
-      debugText("#debug-media-prog-text", "");
-      $<HTMLMeterElement>("#debug-media-prog")!.style.display = "none";
-    }
-
-    if (media.properties) {
-      $<HTMLMeterElement>("#debug-media-props")!.style.display = "block";
-      debugText("#debug-media-title", media.properties.title || "-");
-      debugText("#debug-media-subTitle", media.properties.subTitle || "");
-      debugText("#debug-media-artist", media.properties.artist || "-");
-      debugText("#debug-media-albumArtist", media.properties.albumArtist || "");
-      debugText("#debug-media-album", media.properties.albumTitle || "");
-      debugText("#debug-media-genres", media.properties.genres || "");
-    } else {
-      $<HTMLMeterElement>("#debug-media-props")!.style.display = "none";
-    }
-  }
-
   // console.log(
   //   { audioAvg, audioPeak },
   //   { speedMultiplier: speedMult, scaleMultiplier: scaleMult },
@@ -226,24 +184,6 @@ function makeGradient(colors: string[], angle = 135) {
   return canvas.toDataURL();
 }
 
-function debugText(selectors: string, value: string) {
-  const el = $(selectors);
-  assert(el);
-  el.textContent = value;
-}
-
-function debugNumber(selectors: string, value: number) {
-  const el = $<HTMLMeterElement>(selectors);
-  assert(el);
-  el.value = value;
-}
-
-function debugValue(selectors: string, value: string) {
-  const el = $<HTMLInputElement>(selectors);
-  assert(el);
-  el.value = value;
-}
-
 type AllProps = DefaultWEProps & WallpaperUserPropertiesOf<typeof myProperties>;
 type AllPropValues = {
   [K in keyof AllProps]: NonNullable<AllProps[K]>["value"];
@@ -266,6 +206,10 @@ window.wallpaperPropertyListener = {
     if (_props.debug)
       for (const el of $$<HTMLDivElement>(".debug"))
         el.style.display = props.debug ? "block" : "none";
+    debugEl.audio.style.display =
+      props.debug && props.audioprocessing ? "block" : "none";
+    debugEl.media.style.display =
+      props.debug && media.enabled ? "block" : "none";
 
     kawarp.warpIntensity = props.warpIntensity;
     kawarp.blurPasses = props.blurPasses;
@@ -338,8 +282,11 @@ function getThumbnail(): Thumbnail {
 let lastThumbnail: Thumbnail | undefined;
 let queuedThumbnail: NodeJS.Timeout | undefined;
 async function __useThumbnail(thumbnail: Thumbnail) {
-  // console.log("thumbnail", thumbnail);
-  // if (Array.isArray(thumbnail)) kawarp.loadGradient(thumbnail);
+  // DEBUG
+  {
+    debugEl.art.src = thumbnail.src;
+    debugEl.artInfo.innerText = getThumbnail().source;
+  }
   await kawarp.loadImage(thumbnail.src);
 }
 let _useThumbnail = throttle(__useThumbnail, 0);
@@ -385,41 +332,109 @@ const media: MediaState = {
   duration: 0,
 };
 
-window.wallpaperRegisterMediaStatusListener((event) => {
-  console.log("MediaStatus", event);
-  media.enabled = event.enabled;
-  if (event.enabled) return;
+function setMediaEnabled(enabled = true) {
+  media.enabled = enabled;
+  // DEBUG
+  debugEl.media.style.display = props.debug && media.enabled ? "block" : "none";
+
+  if (enabled) return;
   media.properties = undefined;
   media.artwork = undefined;
   media.playback = window.wallpaperMediaIntegration.PLAYBACK_STOPPED;
   media.position = 0;
   media.duration = 0;
+  // debugEl.mediaStatus.innerText = "❌";
+}
+window.wallpaperRegisterMediaStatusListener((event) => {
+  console.log("MediaStatus", event);
+  setMediaEnabled(event.enabled);
 });
 window.wallpaperRegisterMediaPropertiesListener((event) => {
   console.log("MediaProperties", event);
-  media.enabled = true;
+  setMediaEnabled();
   if (Object.values(event).some(Boolean)) media.properties = event;
   else media.properties = undefined;
+
+  // DEBUG
+  {
+    const contentTypeEmojiMap = {
+      music: "🎵",
+      video: "📹",
+      image: "🖼️",
+      _: "",
+    };
+    debugEl.mediaType.innerText =
+      contentTypeEmojiMap[media.properties?.contentType || "_"];
+    if (media.properties) {
+      debugEl.mediaProps.style.display = "block";
+      debugEl.mediaTitle.innerText = media.properties.title || "-";
+      debugEl.mediaSubTitle.innerText = media.properties.subTitle || "";
+      debugEl.mediaArtist.innerText = media.properties.artist || "-";
+      debugEl.mediaAlbumArtist.innerText = media.properties.albumArtist || "";
+      debugEl.mediaAlbum.innerText = media.properties.albumTitle || "";
+      debugEl.mediaGenres.innerText = media.properties.genres || "";
+    } else {
+      debugEl.mediaProps.style.display = "none";
+    }
+  }
 });
 window.wallpaperRegisterMediaThumbnailListener((event) => {
   console.log("MediaThumbnail", event);
-  media.enabled = true;
+  setMediaEnabled();
   if (event.thumbnail != "data:image/png;base64,") media.artwork = event;
   else media.artwork = undefined;
   // console.log("thumbnail", media);
   useThumbnail();
+
+  // DEBUG
+  {
+    if (media.artwork) {
+      debugEl.mediaArtwork.style.display = "block";
+      debugEl.mediaArt.src = media.artwork.thumbnail;
+      debugEl.mediaPrimary.value = media.artwork.primaryColor;
+      debugEl.mediaSecondary.value = media.artwork.secondaryColor;
+      debugEl.mediaTertiary.value = media.artwork.tertiaryColor;
+      debugEl.mediaTextColor.value = media.artwork.textColor;
+      debugEl.mediaHighContrastColor.value = media.artwork.highContrastColor;
+    } else debugEl.mediaArtwork.style.display = "none";
+  }
 });
 window.wallpaperRegisterMediaPlaybackListener((event) => {
   console.log("MediaPlayback", event);
-  media.enabled = true;
+  setMediaEnabled();
   media.playback = event.state;
   useThumbnail();
+
+  // DEBUG
+  {
+    const emojiMap = {
+      playing: "▶️",
+      paused: "⏸️",
+      stopped: "⏹️",
+    };
+    debugEl.mediaStatus.innerText =
+      emojiMap[getMediaPlaybackStatus(media.playback)];
+  }
 });
 window.wallpaperRegisterMediaTimelineListener((event) => {
   console.log("MediaTimeline", event);
-  media.enabled = true;
+  setMediaEnabled();
   media.position = Math.max(0, event.position);
   media.duration = Math.max(0, event.duration);
+
+  // DEBUG
+  {
+    debugEl.mediaProg.max = media.duration;
+    debugEl.mediaProg.value = media.position;
+    if (media.duration != 0) {
+      const text = `${secsToTime(media.position)} / ${secsToTime(media.duration)}`;
+      debugEl.mediaProgText.innerText = text;
+      debugEl.mediaProg.style.display = "inline-block";
+    } else {
+      debugEl.mediaProgText.innerText = "";
+      debugEl.mediaProg.style.display = "none";
+    }
+  }
 });
 
 const analyzer = createAudioAnalyzer();
@@ -434,6 +449,31 @@ window.wallpaperRegisterAudioListener((samples) => {
   previousAudioTime = now;
 
   analyzer.process(samples, deltaSeconds);
+
+  // DEBUG
+  {
+    debugEl.averageVolume.value = analyzer.averageVolume;
+    debugEl.rmsVolume.value = analyzer.rmsVolume;
+    debugEl.peakVolume.value = analyzer.peakVolume;
+    debugEl.leftVolume.value = analyzer.leftVolume;
+    debugEl.rightVolume.value = analyzer.rightVolume;
+    debugEl.leftBalance.value = clamp(-analyzer.stereoBalance, 1);
+    debugEl.rightBalance.value = clamp(analyzer.stereoBalance, 1);
+    debugEl.bass.value = analyzer.bass;
+    debugEl.midrange.value = analyzer.midrange;
+    debugEl.treble.value = analyzer.treble;
+
+    debugEl.decayingPeakVolume.value = analyzer.decayingPeakVolume;
+    debugEl.kick.value = analyzer.kick;
+    debugEl.clap.value = analyzer.clap;
+    debugEl.hiHat.value = analyzer.hiHat;
+    debugEl.beat.value = analyzer.beat;
+    debugEl.bpm.value = analyzer.bpm;
+    debugEl.bpmText.innerText = analyzer.bpm
+      ? `${Math.round(analyzer.bpm)} `
+      : "";
+    debugEl.onset.value = analyzer.onset;
+  }
 });
 
 useThumbnail();

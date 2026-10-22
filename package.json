@@ -17,10 +17,10 @@
     "wallpaper-engine": "^1.4.0"
   },
   "devDependencies": {
+    "@types/bun": "^1.4.3",
     "prettier": "3.9.10",
     "sharp": "^0.35.5",
     "typescript": "~7.0.2",
-    "vite": "^8.3.4",
-    "@types/bun": "^1.4.3"
+    "vite": "^8.3.4"
   }
 }
