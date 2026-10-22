@@ -8,7 +8,7 @@
 	"tags": [
 		"Abstract"
 	],
-	"version": 6,
+	"version": 7,
 	"visibility": "public",
 	"description": "Applies a kawase blur & domain warping shader on your album art or any other art you choose. Includes options for pride flags. <3\n\n(I'm open to suggestions for a better title and description lol)\n\nSource code: https://github.com/RuinTD/kawarp-wallpaper\nPowered by [url=https://kawarp.boidu.dev/]Kawarp[/url] and inspired by [url=https://github.com/better-lyrics/shaders]Better Lyrics Shaders[/url] (which uses Kawarp)",
 	"workshopid": "3775904129",
