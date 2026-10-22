@@ -285,7 +285,7 @@ async function __useThumbnail(thumbnail: Thumbnail) {
   // DEBUG
   {
     debugEl.art.src = thumbnail.src;
-    debugEl.artInfo.innerText = getThumbnail().source;
+    debugEl.artInfo.innerText = thumbnail.source;
   }
   await kawarp.loadImage(thumbnail.src);
 }
