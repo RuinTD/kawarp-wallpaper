@@ -235,6 +235,10 @@ interface Thumbnail {
   source: "fallback" | "media";
   src: string;
 }
+const defaultThumbnail: Thumbnail = {
+  src: "missingtexture.png",
+  source: "fallback",
+};
 function getThumbnail(): Thumbnail {
   const thumbnail: string | undefined = media.artwork?.thumbnail;
   const state = getMediaPlaybackStatus(media.playback);
@@ -272,15 +276,13 @@ function getThumbnail(): Thumbnail {
         break;
       case "pride":
         return { source: "fallback", src: props.pridePreset };
+      default:
+        return { source: "fallback", src: props.fallback };
     }
   }
-  return { source: "fallback", src: props.fallback };
+  return defaultThumbnail;
 }
 
-const defaultThumbnail: Thumbnail = {
-  src: "presets/mountains.jpg",
-  source: "fallback",
-};
 let lastThumbnail: Thumbnail | undefined;
 let currentThumbnail: Thumbnail = defaultThumbnail;
 let queuedThumbnail: NodeJS.Timeout | undefined;
