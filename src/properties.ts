@@ -11,7 +11,12 @@ const isCustomGradient = "fallback.value == 'gradient'";
 const isUseAlbumArt = "useAlbumArt.value != 'never'";
 
 export const myProperties = {
-  debug: boolProperty({ text: "DEBUG", value: false }),
+  debug: boolProperty({
+    text: "DEBUG",
+    // @ts-ignore
+    icon: "fa-bug",
+    value: false,
+  }),
 
   //#region Art Settings
   artGroup: groupProperty({ text: "Art Settings" }),
@@ -31,7 +36,9 @@ export const myProperties = {
     ],
   }),
   pridePreset: comboProperty({
-    text: "🏳️‍🌈 Pride Flag",
+    text: "Pride Flag",
+    // @ts-ignore
+    icon: "fa-flag",
     condition: "fallback.value == 'pride'",
     value: "pride/rainbow.png",
     options: [
@@ -124,17 +131,32 @@ export const myProperties = {
   }),
   detectMusic: boolProperty({
     text: "Detect Music",
+    // @ts-ignore
+    icon: "fa-music",
     value: true,
     condition: isUseAlbumArt,
   }),
   detectVideo: boolProperty({
     text: "Detect Videos",
+    // @ts-ignore
+    icon: "fa-video",
     value: true,
     condition: isUseAlbumArt,
   }),
   detectImage: boolProperty({
     text: "Detect Images",
+    // @ts-ignore
+    icon: "fa-image",
     value: false,
+    condition: isUseAlbumArt,
+  }),
+  fallbackTimeout: sliderProperty({
+    text: "Wait Before Fallback (Seconds)",
+    value: 1,
+    min: 0,
+    max: 5,
+    fraction: true,
+    precision: 1,
     condition: isUseAlbumArt,
   }),
   //#endregion Art Settings

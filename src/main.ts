@@ -83,9 +83,11 @@ const loop = createFpsLimiter((_dt) => {
   kawarp.animationSpeed = props.animationSpeed * currentSpeed;
 
   if (props.debug) {
-    let thumbnail = getThumbnail() || defaultImg;
-    if (Array.isArray(thumbnail)) thumbnail = makeGradient(thumbnail);
-    $<HTMLImageElement>("#debug-art")!.src = thumbnail;
+    const thumbnail = getThumbnail();
+    $<HTMLImageElement>("#debug-art")!.src = thumbnail.src;
+    let artInfo = thumbnail.source;
+    if (queuedThumbnail) artInfo += " (queued)";
+    debugText("#debug-art-info", artInfo);
 
     debugNumber("#debug-averageVolume", analyzer.averageVolume);
     debugNumber("#debug-rmsVolume", analyzer.rmsVolume);
@@ -118,9 +120,9 @@ const loop = createFpsLimiter((_dt) => {
       _: "❌",
     };
     const contentTypeEmojiMap = {
-      image: "🖼️",
       music: "🎵",
-      video: "📺",
+      video: "📹",
+      image: "🖼️",
       _: "",
     };
 
@@ -242,19 +244,19 @@ function debugValue(selectors: string, value: string) {
   el.value = value;
 }
 
-type MyProps = DefaultWEProps & WallpaperUserPropertiesOf<typeof myProperties>;
-type MyPropValues = {
-  [K in keyof MyProps]: NonNullable<MyProps[K]>["value"];
+type AllProps = DefaultWEProps & WallpaperUserPropertiesOf<typeof myProperties>;
+type AllPropValues = {
+  [K in keyof AllProps]: NonNullable<AllProps[K]>["value"];
 };
 let props = mapValues(
   { ...DefaultWEProps, ...myProperties },
   (v) => v?.value,
-) as MyPropValues;
+) as AllPropValues;
 window.wallpaperPropertyListener = {
-  applyUserProperties(_props: Partial<MyProps>) {
+  applyUserProperties(_props: Partial<AllProps>) {
     props = {
       ...props,
-      ...(mapValues(_props, (v) => v!.value) as Partial<MyPropValues>),
+      ...(mapValues(_props, (v) => v?.value) as Partial<AllPropValues>),
     };
     console.log("props", _props, props);
     if (_props.transitionDuration)
@@ -287,9 +289,11 @@ addEventListener("resize", () => {
   kawarp.resize();
 });
 
-const defaultImg = "presets/mountains.jpg";
-let lastThumbnail: string | string[] = "";
-function getThumbnail(): string | string[] | undefined {
+interface Thumbnail {
+  source: "fallback" | "media";
+  src: string;
+}
+function getThumbnail(): Thumbnail {
   const thumbnail: string | undefined = media.artwork?.thumbnail;
   const state = getMediaPlaybackStatus(media.playback);
 
@@ -306,9 +310,9 @@ function getThumbnail(): string | string[] | undefined {
     (props.useAlbumArt == "playing" && state == "playing") ||
     (props.useAlbumArt == "playorpause" && state != "stopped");
   const isContentAllowed = contentMap[media.properties?.contentType || "_"];
-  const shouldShowArt = isPlaybackActive && isContentAllowed && !!thumbnail;
+  const shouldShowArt = !!thumbnail && isPlaybackActive && isContentAllowed;
 
-  if (shouldShowArt) return thumbnail;
+  if (shouldShowArt) return { source: "media", src: thumbnail };
   else if (props.fallback == "gradient") {
     const colors = [];
     for (let i = 1; i <= props.gradientSteps; i++) {
@@ -317,31 +321,52 @@ function getThumbnail(): string | string[] | undefined {
       // console.log(color, wallpaperColorToHex(color));
       colors.push(wallpaperColorToHex(color));
     }
-    return colors;
+    return { source: "fallback", src: makeGradient(colors) };
   } else {
     switch (props.fallback) {
       case "custom":
-        if (props.customImg) return toFileUrl(props.customImg);
+        if (props.customImg)
+          return { source: "fallback", src: toFileUrl(props.customImg) };
         break;
       case "pride":
-        return props.pridePreset;
-      default:
-        return props.fallback;
+        return { source: "fallback", src: props.pridePreset };
     }
   }
+  return { source: "fallback", src: props.fallback };
 }
 
-async function __useThumbnail(thumbnail: string | string[]) {
+let lastThumbnail: Thumbnail | undefined;
+let queuedThumbnail: NodeJS.Timeout | undefined;
+async function __useThumbnail(thumbnail: Thumbnail) {
   // console.log("thumbnail", thumbnail);
-  if (Array.isArray(thumbnail)) kawarp.loadGradient(thumbnail);
-  else await kawarp.loadImage(thumbnail);
+  // if (Array.isArray(thumbnail)) kawarp.loadGradient(thumbnail);
+  await kawarp.loadImage(thumbnail.src);
 }
 let _useThumbnail = throttle(__useThumbnail, 0);
 function useThumbnail() {
-  const newThumbnail = getThumbnail() || defaultImg;
-  if (isEqual(lastThumbnail, newThumbnail)) return;
-  lastThumbnail = newThumbnail;
-  _useThumbnail(newThumbnail);
+  const newThumbnail = getThumbnail();
+  if (lastThumbnail) {
+    if (isEqual(lastThumbnail, newThumbnail)) return;
+  } else lastThumbnail = newThumbnail;
+
+  queueThumbnail(
+    newThumbnail,
+    newThumbnail.source == "fallback"
+      ? props.fallbackTimeout * 1000
+      : undefined,
+  );
+}
+
+function queueThumbnail(thumbnail: Thumbnail, delay?: number | undefined) {
+  if (queuedThumbnail) {
+    clearTimeout(queuedThumbnail);
+    queuedThumbnail = undefined;
+  }
+  queuedThumbnail = setTimeout(() => {
+    queuedThumbnail = undefined;
+    _useThumbnail(thumbnail);
+  }, delay);
+  lastThumbnail = thumbnail;
 }
 
 interface MediaState {
