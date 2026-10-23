@@ -9,17 +9,18 @@ import {
   getMediaPlaybackStatus,
   createAudioAnalyzer,
   createFpsLimiter,
+  DefaultWEProps,
 } from "wallpaper-engine/helpers";
 import { mapValues } from "es-toolkit/object";
 import "./style.css";
 import type {
+  DefaultWEProps as DefaultWEPropertyDefinitions,
   WallpaperMediaPlaybackState,
   WallpaperMediaPropertiesEvent,
   WallpaperMediaThumbnailEvent,
   WallpaperPropertyListenerOf,
 } from "wallpaper-engine";
 import { clamp, isEqual, throttle } from "es-toolkit";
-import { DefaultWEProps } from "./defaultProps.ts";
 
 const $ = <T extends Element = HTMLElement>(selector: string): T => {
   const el = document.querySelector(selector);
@@ -182,7 +183,8 @@ function makeGradient(colors: string[], angle = 135) {
   return canvas.toDataURL();
 }
 
-type AllProps = DefaultWEProps & WallpaperUserPropertiesOf<typeof myProperties>;
+type AllProps = DefaultWEPropertyDefinitions &
+  WallpaperUserPropertiesOf<typeof myProperties>;
 type AllPropValues = {
   [K in keyof AllProps]: NonNullable<AllProps[K]>["value"];
 };
@@ -191,7 +193,7 @@ let props = mapValues(
   (v) => v?.value,
 ) as AllPropValues;
 window.wallpaperPropertyListener = {
-  applyUserProperties(_props: Partial<AllProps>) {
+  applyUserProperties(_props) {
     props = {
       ...props,
       ...(mapValues(_props, (v) => v?.value) as Partial<AllPropValues>),
