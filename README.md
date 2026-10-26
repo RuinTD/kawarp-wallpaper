@@ -1,4 +1,4 @@
-# vite-project
+# Kawarp Wallpaper
 
 To install dependencies:
 
@@ -6,10 +6,15 @@ To install dependencies:
 bun install
 ```
 
-To run:
+To build:
 
 ```bash
-bun run
+bun run build
 ```
 
-This project was created using `bun init` in bun v1.3.14. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+## Credits
+
+Pride flags are sourced from [Queermoji], which is licensed under [OQL v1.4].
+
+[Queermoji]: https://gitlab.com/PronounsPage/queermoji
+[OQL v1.4]: https://oql.avris.it/license/v1.4?c%5B%5D=Andrea%20Vos%7Chttps%3A%2F%2Favris.it&c%5B%5D=Neutral%20Language%20Council%7Chttps%3A%2F%2Fen.pronouns.page%2Fteam

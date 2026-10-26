@@ -23,9 +23,10 @@ export default defineConfig({
       name: "pride-svgs-to-png",
       configureServer(server) {
         server.middlewares.use(async (req, res, next) => {
-          if (req.url?.startsWith("/pride/") && req.url.endsWith(".png")) {
-            const svgName = path.basename(req.url, ".png") + ".svg";
-            const svgPath = path.join(process.cwd(), "src", "pride", svgName);
+          if (req.url?.startsWith("/flags/") && req.url.endsWith(".png")) {
+            const svgName =
+              decodeURIComponent(path.basename(req.url, ".png")) + ".svg";
+            const svgPath = path.join(process.cwd(), "src", "flags", svgName);
 
             try {
               const pngBuffer = await sharp(svgPath).png().toBuffer();
@@ -42,7 +43,7 @@ export default defineConfig({
         // Only run in build mode (skip in dev mode)
         if (this.meta.watchMode) return;
 
-        const inDir = path.join("src", "pride");
+        const inDir = path.join("src", "flags");
 
         try {
           const entries = await fs.readdir(inDir, { withFileTypes: true });
@@ -57,7 +58,7 @@ export default defineConfig({
 
             this.emitFile({
               type: "asset",
-              fileName: `pride/${pngFileName}`,
+              fileName: `flags/${pngFileName}`,
               source: pngBuffer,
             });
           }

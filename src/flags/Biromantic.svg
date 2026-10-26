@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" width="200" height="120">
+<rect x="0" y="0" width="200" height="48" fill="#E45BA2"/>
+<rect x="0" y="48" width="200" height="24" fill="#BE8DBB"/>
+<rect x="0" y="72" width="200" height="48" fill="#597EC6"/>
+<clipPath id="heart"><path d="M100.00,117.00 C90.25,104.33 35.00,74.75 35.00,32.50 A32.50,32.50 0 1 1 100.00,32.50 A32.50,32.50 0 1 1 165.00,32.50 C165.00,74.75 109.75,104.33 100.00,117.00 Z"/></clipPath>
+<g clip-path="url(#heart)"><rect x="0" y="0" width="200" height="48" fill="#D60270"/>
+<rect x="0" y="48" width="200" height="24" fill="#9B4F96"/>
+<rect x="0" y="72" width="200" height="48" fill="#0038A8"/></g>
+</svg>

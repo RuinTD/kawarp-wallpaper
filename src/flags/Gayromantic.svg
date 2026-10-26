@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" width="200" height="120">
+<rect x="0" y="0" width="200" height="24" fill="#5EB5A2"/>
+<rect x="0" y="24" width="200" height="24" fill="#BCF0D7"/>
+<rect x="0" y="48" width="200" height="24" fill="#F7F9F8"/>
+<rect x="0" y="72" width="200" height="24" fill="#A9CAEC"/>
+<rect x="0" y="96" width="200" height="24" fill="#816AA7"/>
+<clipPath id="heart"><path d="M100.00,117.00 C90.25,104.33 35.00,74.75 35.00,32.50 A32.50,32.50 0 1 1 100.00,32.50 A32.50,32.50 0 1 1 165.00,32.50 C165.00,74.75 109.75,104.33 100.00,117.00 Z"/></clipPath>
+<g clip-path="url(#heart)"><rect x="0" y="0" width="200" height="24" fill="#078D70"/>
+<rect x="0" y="24" width="200" height="24" fill="#98E8C1"/>
+<rect x="0" y="48" width="200" height="24" fill="#F3F6F4"/>
+<rect x="0" y="72" width="200" height="24" fill="#7BADE2"/>
+<rect x="0" y="96" width="200" height="24" fill="#3D1A78"/></g>
+</svg>

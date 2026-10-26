@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" width="200" height="120">
+<rect x="0" y="0" width="200" height="17.143" fill="#FF6691"/>
+<rect x="0" y="17.143" width="200" height="17.143" fill="#FF9997"/>
+<rect x="0" y="34.286" width="200" height="17.143" fill="#FFB782"/>
+<rect x="0" y="51.429" width="200" height="17.143" fill="#FBFFA6"/>
+<rect x="0" y="68.571" width="200" height="17.143" fill="#84BBFF"/>
+<rect x="0" y="85.714" width="200" height="17.143" fill="#9C84FF"/>
+<rect x="0" y="102.857" width="200" height="17.143" fill="#A317FF"/>
+<g fill="none" stroke="#FFFFFF" stroke-width="3.5">
+<path d="M 53,84 A 46,46 0 0 1 145,84"/>
+<path d="M 59,84 A 40,40 0 0 1 139,84"/>
+<path d="M 65,84 A 34,34 0 0 1 133,84"/>
+<path d="M 71,84 A 28,28 0 0 1 127,84"/>
+<line x1="53" y1="84" x2="145" y2="84"/>
+</g>
+<polygon fill="#FFFFFF" points="99.00,54.00 102.41,63.31 112.31,63.67 104.52,69.79 107.23,79.33 99.00,73.80 90.77,79.33 93.48,69.79 85.69,63.67 95.59,63.31"/>
+</svg>

@@ -286,17 +286,32 @@ function getThumbnail(): Thumbnail {
   return defaultThumbnail;
 }
 
+const thumbnailMigrations: Record<string, string> = {
+  "pride/rainbow.png": "flags/LGBTQ.png",
+  "pride/progress.png": "flags/Progress Pride.png",
+  "pride/aromantic.png": "flags/Aromantic.png",
+  "pride/asexual.png": "flags/Asexual.png",
+  "pride/bisexual.png": "flags/Bisexual.png",
+  "pride/gaymen.png": "flags/Gay.png",
+  "pride/intersex.png": "flags/Intersex.png",
+  "pride/lesbian.png": "flags/Lesbian.png",
+  "pride/nonbinary.png": "flags/Nonbinary.png",
+  "pride/pansexual.png": "flags/Pansexual.png",
+  "pride/transgender.png": "flags/Transgender.png",
+};
+
 let lastThumbnail: Thumbnail | undefined;
 let currentThumbnail: Thumbnail = defaultThumbnail;
 let queuedThumbnail: NodeJS.Timeout | undefined;
 async function __useThumbnail(thumbnail: Thumbnail) {
-  currentThumbnail = thumbnail;
+  const src = thumbnailMigrations[thumbnail.src] || thumbnail.src;
+  currentThumbnail = { src, source: thumbnail.source };
   // DEBUG
   {
     debugEl.art.src = thumbnail.src;
     debugEl.artInfo.innerText = thumbnail.source;
   }
-  await kawarp.loadImage(thumbnail.src);
+  await kawarp.loadImage(src);
 }
 let _useThumbnail = throttle(__useThumbnail, 0);
 function useThumbnail() {

@@ -10,6 +10,8 @@ import {
 const isCustomGradient = "fallback.value == 'gradient'";
 const isUseAlbumArt = "useAlbumArt.value != 'never'";
 
+const flag = (name: string) => ({ label: name, value: `flags/${name}.png` });
+
 export const myProperties = {
   debug: boolProperty({
     text: "DEBUG",
@@ -40,19 +42,54 @@ export const myProperties = {
     // @ts-ignore
     icon: "fa-flag",
     condition: "fallback.value == 'pride'",
-    value: "pride/rainbow.png",
+    value: "flags/LGBTQ.png",
     options: [
-      { label: "Rainbow", value: "pride/rainbow.png" },
-      { label: "Progress", value: "pride/progress.png" },
-      { label: "Aromantic", value: "pride/aromantic.png" },
-      { label: "Asexual", value: "pride/asexual.png" },
-      { label: "Bisexual", value: "pride/bisexual.png" },
-      { label: "Gay Man", value: "pride/gaymen.png" },
-      { label: "Intersex", value: "pride/intersex.png" },
-      { label: "Lesbian", value: "pride/lesbian.png" },
-      { label: "Non-Binary", value: "pride/nonbinary.png" },
-      { label: "Pansexual", value: "pride/pansexual.png" },
-      { label: "Transgender", value: "pride/transgender.png" },
+      // Umbrellas
+      flag("Queer"),
+      flag("LGBTQ"),
+      flag("Progress Pride"),
+
+      // Gender
+      flag("Transgender"),
+      flag("Nonbinary"),
+      flag("Intersex"),
+      flag("Genderqueer"),
+      flag("Agender"),
+      flag("Bigender"),
+      flag("Demigirl"),
+      flag("Demiboy"),
+      flag("Xenogender"),
+
+      // Attraction
+      flag("Homoromantic"),
+      flag("Gay"),
+      flag("Gayromantic"),
+      flag("Lesbian"),
+      flag("Lesbiromantic"),
+      flag("Bisexual"),
+      flag("Biromantic"),
+      flag("Pansexual"),
+      flag("Panromantic"),
+      flag("Enbian"),
+      flag("Toric"),
+      flag("Trixic"),
+      flag("Heterosexual"),
+      flag("Heteroromantic"),
+
+      // Aroace spectrum
+      flag("Aroace"),
+      flag("Asexual"),
+      flag("Aromantic"),
+      flag("Demisexual"),
+      flag("Demiromantic"),
+
+      // Relationships, communities, intersectionality
+      flag("Polyamorous"),
+      flag("Bear"),
+      flag("Leather Pride"),
+      flag("Disability Pride"),
+      flag("Cis Ally"),
+      flag("Straight Ally"),
     ],
   }),
   customImg: fileProperty({
