@@ -1,8 +1,10 @@
-import path from "node:path";
 import fs from "node:fs/promises";
+import path from "node:path";
+
 import sharp from "sharp";
 import { defineConfig } from "vite";
 import { wallpaperEnginePlugin } from "wallpaper-engine/plugin";
+
 import { myProperties } from "./src/properties.ts";
 
 export default defineConfig({

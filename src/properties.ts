@@ -1,10 +1,10 @@
 import {
+  boolProperty,
   colorProperty,
   comboProperty,
   fileProperty,
-  sliderProperty,
   groupProperty,
-  boolProperty,
+  sliderProperty,
 } from "wallpaper-engine/plugin";
 
 const isCustomGradient = "fallback.value == 'gradient'";

@@ -1,26 +1,26 @@
-// deno-lint-ignore-file no-window
 import "wallpaper-engine";
-import { Kawarp } from "@kawarp/core";
-import type { WallpaperUserPropertiesOf } from "wallpaper-engine/plugin";
-import { myProperties } from "./properties.ts";
-import {
-  toFileUrl,
-  wallpaperColorToHex,
-  getMediaPlaybackStatus,
-  createAudioAnalyzer,
-  createFpsLimiter,
-  DefaultWEProps,
-} from "wallpaper-engine/helpers";
-import { mapValues } from "es-toolkit/object";
 import "./style.css";
+import { Kawarp } from "@kawarp/core";
+import { clamp, isEqual, throttle } from "es-toolkit";
+import { mapValues } from "es-toolkit/object";
 import type {
-  DefaultWEProps as DefaultWEPropertyDefinitions,
+  DefaultWEPropertyDefinitions,
   WallpaperMediaPlaybackState,
   WallpaperMediaPropertiesEvent,
   WallpaperMediaThumbnailEvent,
   WallpaperPropertyListenerOf,
 } from "wallpaper-engine";
-import { clamp, isEqual, throttle } from "es-toolkit";
+import {
+  createAudioAnalyzer,
+  createFpsLimiter,
+  DefaultWEProps,
+  getMediaPlaybackStatus,
+  toFileUrl,
+  wallpaperColorToHex,
+} from "wallpaper-engine/helpers";
+import type { WallpaperUserPropertiesOf } from "wallpaper-engine/plugin";
+
+import { myProperties } from "./properties.ts";
 
 const $ = <T extends Element = HTMLElement>(selector: string): T => {
   const el = document.querySelector(selector);
@@ -186,18 +186,19 @@ function makeGradient(colors: string[], angle = 135) {
 type AllProps = DefaultWEPropertyDefinitions &
   WallpaperUserPropertiesOf<typeof myProperties>;
 type AllPropValues = {
-  [K in keyof AllProps]: NonNullable<AllProps[K]>["value"];
+  [K in keyof AllProps]: NonNullable<AllProps[K]> extends { value: infer V }
+    ? V
+    : never;
 };
-let props = mapValues(
-  { ...DefaultWEProps, ...myProperties },
-  (v) => v?.value,
+let props = mapValues({ ...DefaultWEProps, ...myProperties }, (v) =>
+  "value" in v ? v.value : undefined,
 ) as AllPropValues;
 window.wallpaperPropertyListener = {
-  applyUserProperties(_props) {
-    props = {
-      ...props,
-      ...(mapValues(_props, (v) => v?.value) as Partial<AllPropValues>),
-    };
+  applyUserProperties(__props) {
+    const _props = mapValues(__props, (v) =>
+      v && "value" in v ? v.value : undefined,
+    ) as Partial<AllPropValues>;
+    props = { ...props, ..._props };
     console.log("props", _props, props);
     if (_props.transitionDuration)
       _useThumbnail = throttle(__useThumbnail, props.transitionDuration * 1000);
@@ -246,18 +247,18 @@ function getThumbnail(): Thumbnail {
   const state = getMediaPlaybackStatus(media.playback);
 
   const contentMap: Record<
-    WallpaperMediaPropertiesEvent["contentType"] | "_",
+    WallpaperMediaPropertiesEvent["contentType"],
     boolean
   > = {
     music: props.detectMusic,
     video: props.detectVideo,
     image: props.detectImage,
-    _: false,
+    "": false,
   };
   const isPlaybackActive =
     (props.useAlbumArt == "playing" && state == "playing") ||
     (props.useAlbumArt == "playorpause" && state != "stopped");
-  const isContentAllowed = contentMap[media.properties?.contentType || "_"];
+  const isContentAllowed = contentMap[media.properties?.contentType || ""];
   const shouldShowArt = !!thumbnail && isPlaybackActive && isContentAllowed;
 
   if (shouldShowArt) return { source: "media", src: thumbnail };
