@@ -307,7 +307,7 @@ function useThumbnail() {
 
   queueThumbnail(
     newThumbnail,
-    newThumbnail.source == "fallback"
+    newThumbnail.source == "fallback" && lastThumbnail.source != "fallback"
       ? props.fallbackTimeout * 1000
       : undefined,
   );
