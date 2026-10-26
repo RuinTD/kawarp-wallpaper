@@ -22,7 +22,7 @@ export const myProperties = {
   artGroup: groupProperty({ text: "Art Settings" }),
   fallback: comboProperty({
     text: "Default Background",
-    value: "presets/mountains.jpg",
+    value: "missingtexture.png",
     options: [
       { label: "Mountains", value: "presets/mountains.jpg" },
       { label: "Ocean", value: "presets/ocean.jpg" },
